@@ -1,0 +1,52 @@
+[project]
+name = "customer-churn-prediction"
+version = "1.0.0"
+description = "Machine Learning solution for predicting customer churn in subscription-based services"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "ML Lab Team" }
+]
+keywords = ["machine-learning", "customer-churn", "prediction", "fastapi", "streamlit"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/Predicting-Customer-Churn-for-a-Subscription-Based-Service"
+Documentation = "https://github.com/yourusername/Predicting-Customer-Churn-for-a-Subscription-Based-Service#readme"
+Repository = "https://github.com/yourusername/Predicting-Customer-Churn-for-a-Subscription-Based-Service"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["src*", "api*", "app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
