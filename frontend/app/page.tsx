@@ -57,7 +57,6 @@ export default function ChurnPredictionPage() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [apiHealthy, setApiHealthy] = useState(false);
 
-  // Check API health on mount
   useEffect(() => {
     const checkHealth = async () => {
       try {
@@ -71,7 +70,7 @@ export default function ChurnPredictionPage() {
         setApiError("Cannot connect to API. Make sure the backend is running on http://localhost:8000");
       }
     };
-    
+
     checkHealth();
   }, []);
 
@@ -83,7 +82,7 @@ export default function ChurnPredictionPage() {
           api.getModelInfo().catch(() => null),
           api.getFeatureImportance().catch(() => []),
         ]);
-        
+
         if (metrics) {
           setModelMetrics(metrics.metrics);
         }
@@ -94,7 +93,7 @@ export default function ChurnPredictionPage() {
         console.error("Error loading model data:", error);
       }
     };
-    
+
     if (apiHealthy) {
       loadModelData();
     }

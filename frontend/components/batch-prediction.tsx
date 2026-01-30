@@ -79,7 +79,7 @@ export function BatchPrediction({ onResults }: BatchPredictionProps) {
 
       const resultsWithRows = batchResults.predictions.map((pred, idx) => ({
         ...pred,
-        row: idx + 2, // Row 1 is header, data starts at row 2
+        row: idx + 2,
       }));
 
       setResults(resultsWithRows);

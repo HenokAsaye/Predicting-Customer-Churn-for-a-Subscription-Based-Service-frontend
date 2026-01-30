@@ -29,7 +29,7 @@ export function CustomerForm({ data, onChange }: CustomerFormProps) {
 
   return (
     <div className="space-y-8">
-      {/* Demographics Section */}
+
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-primary">
           <User className="h-5 w-5" />

@@ -25,13 +25,12 @@ export function EnhancedPredictionDetails({
 }: EnhancedPredictionDetailsProps) {
   const isChurn = prediction === "Yes";
   const riskScore = isChurn ? probability : 1 - probability;
-  
-  // Calculate confidence value
-  const confidenceValue = 
-    confidence === "High" ? 0.85 : 
-    confidence === "Medium" ? 0.65 : 0.45;
 
-  // Data for probability distribution chart
+  const confidenceValue =
+    confidence === "High" ? 0.85 :
+      confidence === "Medium" ? 0.65 : 0.45;
+
+
   const probabilityData = [
     {
       label: "Churn Risk",
@@ -45,19 +44,19 @@ export function EnhancedPredictionDetails({
     },
   ];
 
-  // Gauge data for risk level
+
   const gaugeData = [
     { name: "Risk", value: probability * 100, fill: "#ef4444" },
     { name: "Safe", value: (1 - probability) * 100, fill: "#10b981" },
   ];
 
-  // Confidence breakdown
+
   const confidenceData = [
     { name: "Confidence", value: confidenceValue * 100 },
     { name: "Uncertainty", value: (1 - confidenceValue) * 100 },
   ];
 
-  // Risk level categorization
+
   const getRiskLevel = () => {
     if (probability < 0.3) return { level: "Low", color: "text-green-500", bg: "bg-green-50" };
     if (probability < 0.6) return { level: "Medium", color: "text-yellow-500", bg: "bg-yellow-50" };
@@ -68,7 +67,7 @@ export function EnhancedPredictionDetails({
 
   return (
     <div className="space-y-6">
-      {/* Main Prediction Card */}
+
       <Card className="border-border bg-card overflow-hidden">
         <div
           className={`h-2 w-full ${isChurn ? "bg-red-500" : "bg-green-500"}`}
@@ -89,7 +88,7 @@ export function EnhancedPredictionDetails({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Main Metrics Grid */}
+
           <div className="grid grid-cols-3 gap-4">
             <div className="rounded-lg bg-secondary/50 p-4 text-center">
               <p className="text-sm text-muted-foreground mb-2">Prediction</p>
@@ -110,7 +109,7 @@ export function EnhancedPredictionDetails({
             </div>
           </div>
 
-          {/* Probability Bar */}
+
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold">Churn Probability</span>
@@ -119,9 +118,8 @@ export function EnhancedPredictionDetails({
             <div className="flex gap-2">
               <div className="flex-1 rounded-full overflow-hidden bg-secondary h-8">
                 <div
-                  className={`h-full rounded-full transition-all flex items-center justify-end pr-3 ${
-                    isChurn ? "bg-gradient-to-r from-red-400 to-red-600" : "bg-gradient-to-r from-green-400 to-green-600"
-                  }`}
+                  className={`h-full rounded-full transition-all flex items-center justify-end pr-3 ${isChurn ? "bg-gradient-to-r from-red-400 to-red-600" : "bg-gradient-to-r from-green-400 to-green-600"
+                    }`}
                   style={{ width: `${probability * 100}%` }}
                 >
                   {probability > 0.1 && (
@@ -132,7 +130,7 @@ export function EnhancedPredictionDetails({
             </div>
           </div>
 
-          {/* Pie Chart - Probability Distribution */}
+
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-lg border border-border p-4">
               <p className="text-sm font-semibold mb-3">Probability Distribution</p>

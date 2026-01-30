@@ -25,7 +25,7 @@ export function ModelMetrics({ metrics }: ModelMetricsProps) {
     accuracy: metrics.accuracy,
     precision: metrics.precision,
     recall: metrics.recall,
-    f1Score: metrics.f1Score, // map f1_score to f1Score
+    f1Score: metrics.f1Score,
   };
 
   const data = [
