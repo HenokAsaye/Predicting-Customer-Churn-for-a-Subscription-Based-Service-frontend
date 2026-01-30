@@ -1,7 +1,4 @@
-"""
-Model evaluation utilities for Customer Churn Prediction.
-Provides comprehensive evaluation metrics and visualizations.
-"""
+
 import json
 import numpy as np
 import pandas as pd
@@ -23,9 +20,7 @@ from config import FIGURES_DIR, MODELS_DIR
 
 
 class ModelEvaluator:
-    """
-    Comprehensive model evaluation class.
-    """
+  
     
     def __init__(self, model: Any, model_name: str = "Model"):
         self.model = model
@@ -38,22 +33,12 @@ class ModelEvaluator:
         y_test: np.ndarray,
         threshold: float = 0.5
     ) -> Dict[str, float]:
-        """
-        Evaluate model on test data.
+      
         
-        Args:
-            X_test: Test features.
-            y_test: True labels.
-            threshold: Classification threshold.
-            
-        Returns:
-            Dictionary of evaluation metrics.
-        """
-        # Get predictions
         y_proba = self.model.predict_proba(X_test)[:, 1]
         y_pred = (y_proba >= threshold).astype(int)
         
-        # Calculate metrics
+       
         self.metrics = {
             "accuracy": accuracy_score(y_test, y_pred),
             "precision": precision_score(y_test, y_pred, zero_division=0),
@@ -64,10 +49,10 @@ class ModelEvaluator:
             "threshold": threshold
         }
         
-        # Confusion matrix
+        
         self.metrics["confusion_matrix"] = confusion_matrix(y_test, y_pred)
         
-        # Store predictions for later use
+        
         self.y_test = y_test
         self.y_pred = y_pred
         self.y_proba = y_proba
@@ -75,7 +60,7 @@ class ModelEvaluator:
         return self.metrics
     
     def print_report(self):
-        """Print evaluation report."""
+       
         print(f"\n{'='*50}")
         print(f"Evaluation Report: {self.model_name}")
         print(f"{'='*50}")
@@ -96,7 +81,7 @@ class ModelEvaluator:
         save_path: Optional[Path] = None,
         figsize: Tuple[int, int] = (8, 6)
     ):
-        """Plot confusion matrix heatmap."""
+       
         plt.figure(figsize=figsize)
         
         cm = self.metrics['confusion_matrix']
@@ -123,7 +108,7 @@ class ModelEvaluator:
         save_path: Optional[Path] = None,
         figsize: Tuple[int, int] = (8, 6)
     ):
-        """Plot ROC curve."""
+       
         plt.figure(figsize=figsize)
         
         fpr, tpr, thresholds = roc_curve(self.y_test, self.y_proba)
@@ -154,7 +139,7 @@ class ModelEvaluator:
         save_path: Optional[Path] = None,
         figsize: Tuple[int, int] = (8, 6)
     ):
-        """Plot Precision-Recall curve."""
+      
         plt.figure(figsize=figsize)
         
         precision, recall, thresholds = precision_recall_curve(self.y_test, self.y_proba)
@@ -184,7 +169,7 @@ class ModelEvaluator:
         save_path: Optional[Path] = None,
         figsize: Tuple[int, int] = (10, 6)
     ):
-        """Plot metrics vs threshold analysis."""
+        
         plt.figure(figsize=figsize)
         
         thresholds = np.arange(0.1, 1.0, 0.05)
@@ -221,7 +206,7 @@ class ModelEvaluator:
         plt.legend(loc='best')
         plt.grid(True, alpha=0.3)
         
-        # Find optimal threshold (max F1)
+       
         optimal_idx = np.argmax(metrics_by_threshold['f1_score'])
         optimal_threshold = thresholds[optimal_idx]
         plt.axvline(x=optimal_threshold, color='gray', linestyle='--', 
@@ -244,10 +229,10 @@ class ModelEvaluator:
         save_path: Optional[Path] = None,
         figsize: Tuple[int, int] = (10, 8)
     ):
-        """Plot feature importance."""
+       
         plt.figure(figsize=figsize)
         
-        # Get feature importance
+        
         if hasattr(self.model, 'feature_importances_'):
             importance = self.model.feature_importances_
         elif hasattr(self.model, 'coef_'):
@@ -256,17 +241,17 @@ class ModelEvaluator:
             logger.warning("Model doesn't support feature importance")
             return
         
-        # Ensure lengths match
+       
         if len(importance) != len(feature_names):
             feature_names = [f"feature_{i}" for i in range(len(importance))]
         
-        # Create DataFrame and sort
+       
         importance_df = pd.DataFrame({
             'feature': feature_names,
             'importance': importance
         }).sort_values('importance', ascending=True).tail(top_n)
         
-        # Plot
+       
         colors = plt.cm.RdYlGn(np.linspace(0.2, 0.8, top_n))
         plt.barh(importance_df['feature'], importance_df['importance'], color=colors)
         plt.xlabel('Importance', fontsize=12)
@@ -287,13 +272,13 @@ class ModelEvaluator:
         feature_names: List[str],
         save_dir: Path = FIGURES_DIR
     ):
-        """Generate full evaluation report with all plots."""
+       
         save_dir.mkdir(parents=True, exist_ok=True)
         
-        # Print text report
+       
         self.print_report()
         
-        # Generate all plots
+        
         self.plot_confusion_matrix(save_dir / f'{self.model_name}_confusion_matrix.png')
         self.plot_roc_curve(save_dir / f'{self.model_name}_roc_curve.png')
         self.plot_precision_recall_curve(save_dir / f'{self.model_name}_pr_curve.png')
@@ -313,29 +298,17 @@ def compare_models(
     save_path: Optional[Path] = None,
     figsize: Tuple[int, int] = (12, 5)
 ) -> pd.DataFrame:
-    """
-    Compare multiple models.
-    
-    Args:
-        models: Dictionary of model name to model.
-        X_test: Test features.
-        y_test: Test labels.
-        save_path: Path to save comparison plot.
-        figsize: Figure size.
-        
-    Returns:
-        DataFrame with comparison results.
-    """
+  
     results = []
     
     fig, axes = plt.subplots(1, 2, figsize=figsize)
     
-    # ROC curves
+  
     for model_name, model in models.items():
         y_proba = model.predict_proba(X_test)[:, 1]
         y_pred = model.predict(X_test)
         
-        # Metrics
+       
         metrics = {
             'Model': model_name,
             'Accuracy': accuracy_score(y_test, y_pred),
@@ -346,15 +319,15 @@ def compare_models(
         }
         results.append(metrics)
         
-        # ROC curve
+       
         fpr, tpr, _ = roc_curve(y_test, y_proba)
         axes[0].plot(fpr, tpr, lw=2, label=f"{model_name} (AUC={metrics['ROC-AUC']:.3f})")
         
-        # PR curve
+       
         precision, recall, _ = precision_recall_curve(y_test, y_proba)
         axes[1].plot(recall, precision, lw=2, label=f"{model_name}")
     
-    # ROC plot formatting
+   
     axes[0].plot([0, 1], [0, 1], 'k--', lw=2)
     axes[0].set_xlabel('False Positive Rate')
     axes[0].set_ylabel('True Positive Rate')
@@ -362,7 +335,7 @@ def compare_models(
     axes[0].legend(loc='lower right')
     axes[0].grid(True, alpha=0.3)
     
-    # PR plot formatting
+    
     axes[1].set_xlabel('Recall')
     axes[1].set_ylabel('Precision')
     axes[1].set_title('Precision-Recall Curves Comparison', fontweight='bold')
@@ -376,7 +349,7 @@ def compare_models(
     
     plt.show()
     
-    # Create comparison DataFrame
+    
     comparison_df = pd.DataFrame(results)
     comparison_df = comparison_df.sort_values('ROC-AUC', ascending=False)
     
@@ -392,7 +365,7 @@ if __name__ == "__main__":
     from data_loader import load_raw_data
     from preprocessing import DataPreprocessor, split_data
     
-    # Load data and preprocess
+   
     df = load_raw_data()
     preprocessor = DataPreprocessor()
     preprocessor.load_preprocessor()
@@ -403,10 +376,10 @@ if __name__ == "__main__":
     
     _, X_test, _, y_test = split_data(X, y)
     
-    # Load model
+  
     model = joblib.load(BEST_MODEL_PATH)
     
-    # Evaluate
+    
     evaluator = ModelEvaluator(model, "Best Model")
     evaluator.evaluate(X_test, y_test)
     evaluator.generate_full_report(preprocessor.get_feature_names())
