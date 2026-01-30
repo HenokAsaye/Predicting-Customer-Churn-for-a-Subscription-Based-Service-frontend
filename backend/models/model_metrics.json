@@ -1,0 +1,88 @@
+{
+  "Logistic Regression": {
+    "cv_results": {
+      "accuracy_mean": 0.6835891380324579,
+      "accuracy_std": 0.010961243943952103,
+      "precision_mean": 0.6742652365919051,
+      "precision_std": 0.004622973417046665,
+      "recall_mean": 0.7101635659450861,
+      "recall_std": 0.03475485758016294,
+      "f1_mean": 0.6913659018445053,
+      "f1_std": 0.017901038535763473,
+      "roc_auc_mean": 0.7566226048427314,
+      "roc_auc_std": 0.008333691995139109
+    },
+    "test_metrics": {
+      "accuracy": 0.6941092973740242,
+      "precision": 0.521669341894061,
+      "recall": 0.7096069868995634,
+      "f1_score": 0.6012950971322849,
+      "roc_auc": 0.7653584597229302
+    },
+    "best_params": {
+      "C": 1,
+      "max_iter": 1000,
+      "penalty": "l2",
+      "random_state": 42,
+      "solver": "lbfgs"
+    }
+  },
+  "Random Forest": {
+    "cv_results": {
+      "accuracy_mean": 0.7922179833212221,
+      "accuracy_std": 0.014481527132264216,
+      "precision_mean": 0.8078723730260657,
+      "precision_std": 0.010942383154124463,
+      "recall_mean": 0.7667072411646725,
+      "recall_std": 0.02559722338787248,
+      "f1_mean": 0.7865967689556592,
+      "f1_std": 0.016871980349844495,
+      "roc_auc_mean": 0.8843079522042363,
+      "roc_auc_std": 0.010405250247101972
+    },
+    "test_metrics": {
+      "accuracy": 0.7182398864442867,
+      "precision": 0.5859154929577465,
+      "recall": 0.45414847161572053,
+      "f1_score": 0.5116851168511685,
+      "roc_auc": 0.7589207407509447
+    },
+    "best_params": {
+      "max_depth": null,
+      "min_samples_leaf": 1,
+      "min_samples_split": 2,
+      "n_estimators": 300,
+      "random_state": 42
+    }
+  },
+  "XGBoost": {
+    "cv_results": {
+      "accuracy_mean": 0.7794608809993425,
+      "accuracy_std": 0.010741700978077105,
+      "precision_mean": 0.798618861434574,
+      "precision_std": 0.003938261609740924,
+      "recall_mean": 0.7472428936994259,
+      "recall_std": 0.022984714570164308,
+      "f1_mean": 0.7719444660708618,
+      "f1_std": 0.013792293266469057,
+      "roc_auc_mean": 0.8743561704420122,
+      "roc_auc_std": 0.010256965121003896
+    },
+    "test_metrics": {
+      "accuracy": 0.7246273953158269,
+      "precision": 0.5911458333333334,
+      "recall": 0.49563318777292575,
+      "f1_score": 0.5391923990498813,
+      "roc_auc": 0.7693418557344831
+    },
+    "best_params": {
+      "colsample_bytree": 0.8,
+      "learning_rate": 0.1,
+      "max_depth": 3,
+      "n_estimators": 100,
+      "random_state": 42,
+      "subsample": 1.0
+    }
+  },
+  "best_model": "XGBoost"
+}
