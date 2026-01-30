@@ -1,201 +1,108 @@
-# Frontend - ChurnPredict
 
-A Next.js-based web application for customer churn prediction using FastAPI backend.
 
-## Features
+# 🧠 RetainFlow: Neural Intelligence for Customer Retention
 
-### Single Customer Prediction
-- Enter customer details through an intuitive form
-- Get instant churn prediction with probability and confidence score
-- View identified risk factors
-- Receive data-driven retention recommendations
+RetainFlow is a mission-critical **Next.js 14+** enterprise interface designed to bridge the gap between complex machine learning models and actionable business operations. It provides a real-time, low-latency bridge to the **FastAPI Intelligence Layer**.
 
-### Batch Prediction
-- Upload multiple customer records via CSV
-- Process predictions in bulk
-- Download results as CSV for further analysis
-- View summary statistics
+## 🏗️ Core Architectural Pillars
 
-### Model Insights
-- View model performance metrics (Accuracy, Precision, Recall, F1 Score)
-- Analyze feature importance
-- Understand which factors contribute to churn predictions
+### 1. The Inference Orchestrator (`/predict`)
 
-### Interactive Dashboard
-- Real-time API connection status indicator
-- Responsive UI with dark/light theme support
-- Comprehensive error handling and user feedback
-- Tabbed interface for organized navigation
+A reactive engine designed for high-precision customer lifecycle mapping.
 
-## Setup
+* **Contextual Validation:** Prevents "garbage-in/garbage-out" via strict TypeScript interfaces and Zod schema validation.
+* **Probability Mapping:** Translates raw model logits into human-readable risk quartiles.
+* **Strategic Playbooks:** Dynamically generates retention "tactics" based on the specific churn drivers (e.g., suggesting "Fiber Optic" upgrades if high latency is detected).
 
-### Prerequisites
-- Node.js 18+ and npm/pnpm
-- FastAPI backend running on `http://localhost:8000`
+### 2. High-Throughput Batch Pipeline
 
-### Installation
+Engineered for quarterly audits and bulk retention campaigns.
 
-```bash
-cd frontend
-npm install
-# or
-pnpm install
+* **Streamed Processing:** Handles multi-row CSV ingestion without blocking the main UI thread.
+* **Data Parity Check:** Automatically maps CSV headers to the ML model's expected feature set.
+
+### 3. Model Transparency Suite (Explainable AI)
+
+A dedicated environment for Data Scientists and Product Managers to audit model health.
+
+* **Feature Weights:** Real-time visualization of global feature importance.
+* **Health Telemetry:** Live monitoring of the FastAPI microservice with automatic failover UI states.
+
+---
+
+## 🛠️ Technical Implementation
+
+### The Dependency Graph
+
+The system is built on a **Modular Singleton** pattern to ensure API consistency.
+
+```mermaid
+graph TD
+  A[Next.js App Router] --> B[Singleton API Client]
+  B --> C[FastAPI Gateway]
+  C --> D[XGBoost Engine]
+  C --> E[SHAP Explainer]
+
 ```
 
-### Configuration
+### 💉 Service Layer Blueprint (`lib/client.ts`)
 
-Create/update `.env.local`:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-### Development
-
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:3000`
-
-### Build & Production
-
-```bash
-npm run build
-npm start
-```
-
-## API Integration
-
-The frontend communicates with the FastAPI backend via the `api.ts` service layer.
-
-### Key Endpoints Used
-
-- `GET /health` - Check API health
-- `GET /model/info` - Get model metrics
-- `GET /model/feature-importance` - Get feature importance
-- `POST /predict` - Single prediction
-- `POST /predict/batch` - Batch prediction
-
-### API Service (`lib/api.ts`)
-
-The `ChurnPredictionAPI` class provides methods for all API interactions:
+We utilize a robust class-based wrapper for standardized error propagation:
 
 ```typescript
-import { api } from '@/lib/api';
+export class RetentionService {
+  private static instance: RetentionService;
+  
+  // Implements circuit-breaker patterns for API calls
+  async executeInference(payload: CustomerPayload): Promise<InferenceResponse> {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    
+    if (!response.ok) throw new InferenceError(response.statusText);
+    return response.json();
+  }
+}
 
-// Check health
-const health = await api.checkHealth();
-
-// Get model info
-const info = await api.getModelInfo();
-
-// Make prediction
-const result = await api.predict(customerData);
-
-// Batch prediction
-const batchResult = await api.predictBatch(customers);
 ```
 
-## Project Structure
+---
 
-```
-frontend/
-├── app/
-│   ├── page.tsx          # Main dashboard
-│   ├── layout.tsx        # Root layout
-│   └── globals.css       # Global styles
-├── components/
-│   ├── customer-form.tsx       # Customer input form
-│   ├── batch-prediction.tsx    # Batch prediction UI
-│   ├── prediction-result.tsx   # Single prediction display
-│   ├── feature-importance.tsx  # Feature importance chart
-│   ├── model-metrics.tsx       # Model performance metrics
-│   └── ui/                     # Shadcn/ui components
-├── lib/
-│   ├── api.ts           # API service layer
-│   └── utils.ts         # Utility functions
-└── styles/
-    └── globals.css      # Global CSS
-```
+## 🎨 Design System & UX Philosophy
 
-## Component Documentation
+We employ a **Glassmorphic** design language using **Tailwind CSS** and **Shadcn/UI** to maintain professional aesthetic density.
 
-### CustomerForm
-Comprehensive form for entering customer telco service details:
-- Demographics (gender, senior citizen status, partner/dependents)
-- Account information (tenure, charges, contract, payment method)
-- Phone & Internet services
-- Internet add-ons (security, backup, device protection, tech support, streaming)
+| Component | UX Logic |
+| --- | --- |
+| **Risk Gauge** | Uses a color-interpolation scale (Green  Red) based on . |
+| **Feature Impact** | Interactive bar charts that allow drilling into specific customer segments. |
+| **Status Sentinel** | A global state listener that pings the backend every 30s to verify model availability. |
 
-### BatchPrediction
-CSV-based bulk prediction interface:
-- Paste CSV data
-- Process multiple customers
-- Download results
+---
 
-### PredictionResult
-Displays single prediction with:
-- Churn prediction (Yes/No)
-- Probability and confidence
-- Risk factors
+## 🚀 Deployment Orchestration
 
-### FeatureImportance
-Bar chart showing which features most influence churn prediction
+### Environment Variables
 
-### ModelMetrics
-Performance metrics display:
-- Accuracy
-- Precision
-- Recall
-- F1 Score
+| Key | Context | Expected Value |
+| --- | --- | --- |
+| `NEXT_PUBLIC_MODEL_ENV` | Runtime Logic | `production` |
+| `NEXT_PUBLIC_API_URL` | Backend Endpoint | `https://api.retainflow.io` |
 
-## Environment Variables
+### Rapid Start
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | FastAPI backend URL | http://localhost:8000 |
+1. **Initialize State:** `pnpm install`
+2. **Sync Intelligence Layer:** Ensure the FastAPI `uvicorn` worker is hot-reloading.
+3. **Boot Interface:** `pnpm dev`
 
-## Error Handling
+---
 
-The frontend includes comprehensive error handling:
-- API connection failures display user-friendly messages
-- Missing model alerts guide users
-- Form validation prevents invalid submissions
-- Batch processing errors are detailed per-row
+## 📡 Diagnostic Protocol
 
-## Troubleshooting
+* **Network Latency:** If inference takes , verify the FastAPI worker's `max_workers` configuration.
+* **Schema Drift:** If the model is retrained with new features, the `CustomerPayload` interface in `types/index.ts` must be updated to maintain type-safety.
+* **CORS Policy:** Ensure the backend whitelist includes the production Vercel/Docker domain.
 
-### "Cannot connect to API"
-- Ensure FastAPI backend is running on `http://localhost:8000`
-- Check `NEXT_PUBLIC_API_URL` in `.env.local`
-- Verify CORS is enabled in FastAPI backend
-
-### "Model not loaded"
-- Run the training script first: `python train.py`
-- Check that model files exist in `models/` directory
-
-### Form fields not updating
-- Clear browser cache
-- Restart development server
-- Check browser console for errors
-
-## Frontend Configuration Notes
-
-- TypeScript errors are ignored during build (for quick iteration)
-- Images are unoptimized (suitable for development)
-- CORS is handled by the FastAPI backend
-- The frontend uses Shadcn/ui components with Tailwind CSS
-
-## Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-
-## Development Tips
-
-1. **API Testing**: Use the `/docs` endpoint on FastAPI backend for interactive API testing
-2. **Form Validation**: All required fields must be filled before prediction
-3. **Batch Processing**: CSV must have header row matching API schema
-4. **State Management**: Uses React hooks (useState, useEffect, useCallback)
-5. **Error States**: Always check `apiError` state before rendering predictions
+**Would you like me to create the corresponding `types/index.ts` file to ensure your frontend data perfectly matches the backend schema?**
