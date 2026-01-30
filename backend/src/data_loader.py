@@ -175,3 +175,8 @@ if __name__ == "__main__":
     info = get_data_info(df)
     print(f"Data shape: {info['n_rows']} rows, {info['n_columns']} columns")
     print(f"Missing values: {sum(info['missing_values'].values())}")
+
+
+
+
+
