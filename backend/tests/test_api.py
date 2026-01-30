@@ -1,40 +1,31 @@
-"""
-Tests for the FastAPI application.
-"""
 import pytest
-from fastapi.testclient import TestClient
 import sys
 from pathlib import Path
+from fastapi.testclient import TestClient
 
-sys.path.append(str(Path(__file__).parent.parent))
+BASE_DIR = Path(__file__).resolve().parent.parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
 
 from api.main import app
 
-
-@pytest.fixture
+@pytest.fixture(scope="module")
 def client():
-    """Create a test client."""
-    return TestClient(app)
-
+    with TestClient(app) as c:
+        yield c
 
 def test_root_endpoint(client):
-    """Test the root endpoint."""
     response = client.get("/")
     assert response.status_code == 200
-    assert "message" in response.json()
-
+    assert response.json().get("message") is not None
 
 def test_health_endpoint(client):
-    """Test the health check endpoint."""
     response = client.get("/health")
     assert response.status_code == 200
     data = response.json()
-    assert "status" in data
-    assert "version" in data
-
+    assert all(k in data for k in ("status", "version"))
 
 def test_predict_endpoint_valid_data(client):
-    """Test prediction with valid customer data."""
     customer_data = {
         "gender": "Female",
         "SeniorCitizen": 0,
@@ -59,28 +50,21 @@ def test_predict_endpoint_valid_data(client):
     
     response = client.post("/predict", json=customer_data)
     
-    # May fail if model not trained, but should not crash
     if response.status_code == 200:
         data = response.json()
-        assert "prediction" in data
-        assert "probability" in data
-        assert data["prediction"] in ["Yes", "No"]
-        assert 0 <= data["probability"] <= 1
-
+        assert all(k in data for k in ("prediction", "probability"))
+        assert data["prediction"] in {"Yes", "No"}
+        assert 0.0 <= float(data["probability"]) <= 1.0
 
 def test_predict_endpoint_invalid_data(client):
-    """Test prediction with invalid customer data."""
     invalid_data = {
         "gender": "Invalid",
         "tenure": -1
     }
-    
     response = client.post("/predict", json=invalid_data)
-    assert response.status_code in [422, 500]  # Validation or server error
-
+    assert response.status_code in {422, 500}
 
 def test_batch_predict_endpoint(client):
-    """Test batch prediction endpoint."""
     batch_data = {
         "customers": [
             {
@@ -114,21 +98,13 @@ def test_batch_predict_endpoint(client):
         assert "predictions" in data
         assert "summary" in data
 
-
 def test_model_info_endpoint(client):
-    """Test model info endpoint."""
     response = client.get("/model/info")
-    
-    # May fail if model not trained
     if response.status_code == 200:
         data = response.json()
         assert "model_name" in data
         assert "accuracy" in data
 
-
 def test_feature_importance_endpoint(client):
-    """Test feature importance endpoint."""
     response = client.get("/model/features")
-    
-    # May return 404 if not available
-    assert response.status_code in [200, 404]
+    assert response.status_code in {200, 404}
